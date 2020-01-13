@@ -1,0 +1,46 @@
+version: 1.0.{build}
+os: Visual Studio 2019
+skip_tags: true
+configuration: Release
+
+environment:
+  sonarqubetoken:
+    secure: ppdeirHI9dsM7NpQgtwIRqXbiqhJZvIyHxOFhnME5HhRFS6IbYZqRppQi7fTqv37
+
+before_build:
+  - ps: .\scripts\set-version.ps1
+  - cmd: dotnet --info
+  - cmd: dotnet restore
+  - choco install opencover.portable
+  - choco install codecov
+  - choco install xunit
+  - choco install "msbuild-sonarqube-runner" -y
+  - choco install 7zip
+
+build_script:
+  - SonarScanner.MSBuild.exe begin /k:"DeveThuisbezorgdBot" /o:"devedse-github" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.login=%sonarqubetoken% /d:sonar.cs.opencover.reportsPaths=".\DeveThuisbezorgdBot.Coverage.xml" /d:sonar.coverage.exclusions="DeveThuisbezorgdBot.ConsoleApp/**/*.cs,DeveThuisbezorgdBot.Tests/**/*.cs"
+  - cmd: dotnet build -c Release
+  - OpenCover.Console.exe -register:user -target:"dotnet.exe" -targetargs:"test .\DeveThuisbezorgdBot.Tests\DeveThuisbezorgdBot.Tests.csproj -c Release" -oldstyle -returntargetcode -output:.\DeveThuisbezorgdBot.Coverage.xml -filter:"+[DeveThuisbezorgdBot*]*"
+  - SonarScanner.MSBuild.exe end /d:sonar.login=%sonarqubetoken%
+  - codecov -f "DeveThuisbezorgdBot.Coverage.xml"
+
+#test_script:
+#  - cmd: dotnet test -c release DeveThuisbezorgdBot.Tests\DeveThuisbezorgdBot.Tests.csproj
+  
+after_test:
+  - cmd: dotnet pack -c Release DeveThuisbezorgdBot\
+  - ps: Scripts\GoPackage.ps1
+
+artifacts:
+- path: Scripts\Output\DeveThuisbezorgdBot.7z
+  name: droppackage7z
+- path: Scripts\Output\DeveThuisbezorgdBot.zip
+  name: droppackagezip
+- path: 'DeveThuisbezorgdBot\bin\Release\*.nupkg'
+  name: nugetPackages
+
+deploy:
+- provider: GitHub
+  auth_token:
+    secure: do7S++r1rE5E3IZujCoMONsWYJNF7eoRoPyJbxSD851I850OlEq0gsHH/Tji7o00
+  artifact: droppackage7z,droppackagezip,nugetPackages

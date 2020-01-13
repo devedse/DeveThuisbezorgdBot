@@ -1,0 +1,1 @@
+docker run -it --rm devedse/devethuisbezorgdbot /bin/bash

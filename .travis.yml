@@ -1,0 +1,27 @@
+# Verifying yaml files: http://www.yamllint.com/ or https://github.com/adrienverge/yamllint
+
+branches:
+  only:
+  - master
+
+services:
+  - docker
+
+matrix:
+  include:
+    - mono: none
+      os: linux
+      dist: bionic # Ubuntu 18.04
+
+script:
+  - python Scripts/set-version.py
+  - docker build -t "devedse/devethuisbezorgdbot:latest" -f DeveThuisbezorgdBot.WebApp/Dockerfile .;
+  - if [[ $TRAVIS_BRANCH == 'master' ]]; then
+      docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
+      docker image tag devedse/devethuisbezorgdbot:latest "devedse/devethuisbezorgdbot:$TRAVIS_BUILD_NUMBER";
+      docker images;
+      docker push devedse/devethuisbezorgdbot;
+    fi
+
+notifications:
+  email: false
