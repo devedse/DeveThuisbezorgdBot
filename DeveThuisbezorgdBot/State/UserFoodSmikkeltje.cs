@@ -1,4 +1,4 @@
-﻿namespace DeveThuisbezorgdBot.PocoObjects
+﻿namespace DeveThuisbezorgdBot.State
 {
     public class UserFoodSmikkeltje
     {

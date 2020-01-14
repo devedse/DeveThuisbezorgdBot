@@ -10,7 +10,7 @@ namespace DeveThuisbezorgdBot.TelegramBot
         {
             var config = BotConfigLoader.LoadFromStaticFile();
 
-            var bot = new DeveHangmanTelegramBot(config);
+            var bot = new DeveThuisbezorgdTelegramBot(config);
             await bot.Start();
         }
     }

@@ -1,8 +1,8 @@
 ﻿using DeveCoolLib.Logging;
-using DeveThuisbezorgdBot.PocoObjects;
-using System;
+using DeveThuisbezorgdBot.Flows;
+using DeveThuisbezorgdBot.Flows.Joiners;
+using DeveThuisbezorgdBot.State;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Telegram.Bot;
@@ -13,7 +13,8 @@ namespace DeveThuisbezorgdBot
     public class ChatState
     {
         public ThuisbezorgdState CurrentState { get; set; }
-        public IEnumerator<string> EnumeratorThing { get; set; }
+        public IThuisbezorgdFlow CurrentFlow { get; set; }
+
         public long ChatId { get; }
 
         public Dictionary<long, int> Points = new Dictionary<long, int>();
@@ -31,25 +32,47 @@ namespace DeveThuisbezorgdBot
         {
             var msg = message.Text;
 
-            if (msg.Equals("!help"))
-            {
-                await DisplayHelp(bot);
-            }
-            else if (msg.Equals("!food"))
+            if (msg.Equals("!food"))
             {
                 CurrentState = new ThuisbezorgdState()
                 {
                     Initiator = message.From.Id
                 };
-            }
+                CurrentFlow = null;
 
-            if (CurrentState != null)
+                await GoToNextFlow(bot, message);
+            }
+            else if (CurrentFlow != null)
             {
-
+                var finished = await CurrentFlow.ProcessMessage(this, bot, message);
+                if (finished)
+                {
+                    await GoToNextFlow(bot, message);
+                }
             }
-
         }
 
+        private async Task GoToNextFlow(TelegramBotClient bot, Message message)
+        {
+            if (CurrentFlow != null)
+            {
+                await CurrentFlow.Finish(this, bot, message);
+            }
+            CurrentFlow = DetermineNextFlow();
+            await CurrentFlow.Init(this, bot, message);
+        }
+
+        public IThuisbezorgdFlow DetermineNextFlow()
+        {
+            if (CurrentState.FoodSmikkelaars.Count == 0)
+            {
+                return new JoinerFlow();
+            }
+            else
+            {
+                return new RestaurantSelectionFlow();
+            }
+        }
 
         public async Task DisplayHelp(TelegramBotClient bot)
         {

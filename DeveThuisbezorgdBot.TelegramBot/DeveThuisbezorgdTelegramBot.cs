@@ -13,7 +13,7 @@ using Telegram.Bot.Types.Enums;
 
 namespace DeveThuisbezorgdBot.TelegramBot
 {
-    public class DeveHangmanTelegramBot
+    public class DeveThuisbezorgdTelegramBot
     {
         private readonly TelegramBotClient _bot;
         private readonly BotConfig _botConfig;
@@ -25,7 +25,7 @@ namespace DeveThuisbezorgdBot.TelegramBot
 
         private readonly ILogger _logger;
 
-        public DeveHangmanTelegramBot(BotConfig botConfig, params ILogger[] extraLoggers)
+        public DeveThuisbezorgdTelegramBot(BotConfig botConfig, params ILogger[] extraLoggers)
         {
             _botConfig = botConfig;
             _extraLoggers = extraLoggers;
@@ -144,11 +144,11 @@ namespace DeveThuisbezorgdBot.TelegramBot
 
 
 
-            if (txt.Equals("/help", StringComparison.OrdinalIgnoreCase))
+            if (txt.Equals("!help", StringComparison.OrdinalIgnoreCase))
             {
                 await LogAndRespond(currentChatId, $"Hello {message.From.FirstName}{Environment.NewLine}Some usefull data:{Environment.NewLine}BotId: {_botConfig.TelegramBotToken.Split(':').FirstOrDefault()}{Environment.NewLine}ChatId: {message.Chat.Id}{Environment.NewLine}UserId: {message.From.Id}{Environment.NewLine}Version: {Assembly.GetEntryAssembly().GetName().Version}");
             }
-            else if (message.From.Id == 239844924L && txt.Equals("/update", StringComparison.OrdinalIgnoreCase))
+            else if (message.From.Id == 239844924L && txt.Equals("!update", StringComparison.OrdinalIgnoreCase))
             {
                 //Admin commands only allowed by Devedse
                 var task = Task.Run(async () =>
@@ -163,10 +163,10 @@ namespace DeveThuisbezorgdBot.TelegramBot
                     Environment.Exit(0);
                 });
             }
-            else if (message.From.Id == 239844924L && txt.StartsWith("/broadcast", StringComparison.OrdinalIgnoreCase))
+            else if (message.From.Id == 239844924L && txt.StartsWith("!broadcast", StringComparison.OrdinalIgnoreCase))
             {
                 //Admin commands only allowed by Devedse
-                var cmd = "/broadcast ";
+                var cmd = "!broadcast ";
                 if (txt.Length > cmd.Length)
                 {
                     var remainder = txt.Substring(cmd.Length);

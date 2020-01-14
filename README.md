@@ -5,7 +5,7 @@ A very simple and easy to use Hangman bot for Telegram
 
 | Travis (Linux/Osx build) | AppVeyor (Windows build) |
 |:------------------------:|:------------------------:|
-| [![Build Status](https://travis-ci.org/devedse/DeveThuisbezorgdBot.svg?branch=master)](https://travis-ci.org/devedse/DeveThuisbezorgdBot) | [![Build status](https://ci.appveyor.com/api/projects/status/92vjclbg8770ds79?svg=true)](https://ci.appveyor.com/project/devedse/devethuisbezorgdbot) |
+| [![Build Status](https://travis-ci.org/devedse/DeveThuisbezorgdBot.svg?branch=master)](https://travis-ci.org/devedse/DeveThuisbezorgdBot) | [![Build status](https://ci.appveyor.com/api/projects/status/ha2afc0dq2krenyr?svg=true)](https://ci.appveyor.com/project/devedse/devethuisbezorgdbot) |
 
 ## Code Coverage Status
 

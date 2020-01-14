@@ -86,7 +86,7 @@ namespace DeveThuisbezorgdBot.WebApp
             }
 
             var extraLogger = new DateTimeLoggerAppender(new DirtyMemoryLogger(LogLevel.Verbose), ": ");
-            var telegramBot = new DeveHangmanTelegramBot(config, extraLogger);
+            var telegramBot = new DeveThuisbezorgdTelegramBot(config, extraLogger);
 
             await telegramBot.Start();
         }

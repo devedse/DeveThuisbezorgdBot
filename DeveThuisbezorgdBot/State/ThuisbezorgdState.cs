@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace DeveThuisbezorgdBot.PocoObjects
+namespace DeveThuisbezorgdBot.State
 {
     public class ThuisbezorgdState
     {
