@@ -1,9 +1,11 @@
 ﻿using DeveCoolLib.Logging;
+using DeveCoolLib.Threading;
 using DeveThuisbezorgdBot.Flows;
 using DeveThuisbezorgdBot.Flows.Joiners;
 using DeveThuisbezorgdBot.State;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Types;
@@ -21,6 +23,8 @@ namespace DeveThuisbezorgdBot
         private readonly ILogger _logger;
         private readonly GlobalBotState _globalBotState;
 
+        private SemaphoreSlim _semaphoreSlim = new SemaphoreSlim(1);
+
         public ChatState(ILogger logger, GlobalBotState globalBotState, long chatId)
         {
             _logger = logger;
@@ -30,24 +34,28 @@ namespace DeveThuisbezorgdBot
 
         public async Task HandleMessage(TelegramBotClient bot, Message message)
         {
-            var msg = message.Text;
-
-            if (msg.Equals("!food"))
+            //Ensure only one message can be handled at a time
+            using (var disposableSemaphore = await _semaphoreSlim.DisposableWaitAsync())
             {
-                CurrentState = new ThuisbezorgdState()
-                {
-                    Initiator = message.From.Id
-                };
-                CurrentFlow = null;
+                var msg = message.Text;
 
-                await GoToNextFlow(bot, message);
-            }
-            else if (CurrentFlow != null)
-            {
-                var finished = await CurrentFlow.ProcessMessage(this, bot, message);
-                if (finished)
+                if (msg.Equals("!food"))
                 {
+                    CurrentState = new ThuisbezorgdState()
+                    {
+                        Initiator = message.From.Id
+                    };
+                    CurrentFlow = null;
+
                     await GoToNextFlow(bot, message);
+                }
+                else if (CurrentFlow != null)
+                {
+                    var finished = await CurrentFlow.ProcessMessage(this, bot, message);
+                    if (finished)
+                    {
+                        await GoToNextFlow(bot, message);
+                    }
                 }
             }
         }
