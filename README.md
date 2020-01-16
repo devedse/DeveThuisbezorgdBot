@@ -18,3 +18,8 @@ A very simple and easy to use Hangman bot for Telegram
 | SonarQube |
 |:---------:|
 | [![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=DeveThuisbezorgdBot&metric=alert_status)](https://sonarcloud.io/dashboard?id=DeveThuisbezorgdBot) |
+
+## Container
+| Docker Hub |
+|:----------:|
+| [![Docker Hub](https://img.shields.io/docker/pulls/devedse/devethuisbezorgdbot)](https://hub.docker.com/r/devedse/devethuisbezorgdbot) |
