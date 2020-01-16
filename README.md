@@ -1,5 +1,5 @@
 # DeveThuisbezorgdBot
-A very simple and easy to use Hangman bot for Telegram
+A very simple and easy to use Hangman bot for Telegram. It's currently still in development so do not use yet :smile:.
 
 ## Build status
 
