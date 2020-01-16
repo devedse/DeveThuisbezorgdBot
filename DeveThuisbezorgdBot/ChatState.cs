@@ -23,7 +23,7 @@ namespace DeveThuisbezorgdBot
         private readonly ILogger _logger;
         private readonly GlobalBotState _globalBotState;
 
-        private SemaphoreSlim _semaphoreSlim = new SemaphoreSlim(1);
+        private readonly SemaphoreSlim _semaphoreSlim = new SemaphoreSlim(1);
 
         public ChatState(ILogger logger, GlobalBotState globalBotState, long chatId)
         {
